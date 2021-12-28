@@ -1251,12 +1251,14 @@ static void ProcessBootconfig() {
     });
 }
 
+#ifndef TARGET_OPT_OUT_SAFETYNET_SPOOF
 static void SetSafetyNetProps() {
     InitPropertySet("ro.boot.flash.locked", "1");
     InitPropertySet("ro.boot.verifiedbootstate", "green");
     InitPropertySet("ro.boot.veritymode", "enforcing");
     InitPropertySet("ro.boot.vbmeta.device_state", "locked");
 }
+#endif
 
 void PropertyInit() {
     selinux_callback cb;
@@ -1272,11 +1274,13 @@ void PropertyInit() {
         LOG(FATAL) << "Failed to load serialized property info file";
     }
 
+#ifndef TARGET_OPT_OUT_SAFETYNET_SPOOF
     // Report a valid verified boot chain to make Google SafetyNet integrity
     // checks pass. This needs to be done before parsing the kernel cmdline as
     // these properties are read-only and will be set to invalid values with
     // androidboot cmdline arguments.
     SetSafetyNetProps();
+#endif
 
     // If arguments are passed both on the command line and in DT,
     // properties set in DT always have priority over the command-line ones.
